@@ -1,0 +1,30 @@
+openapi: 3.0.3
+info:
+  title: Cookiebot API
+  version: 1.0.0
+  description: API with OAuth2 client credentials authorization
+
+components:
+  securitySchemes:
+    oAuth2ClientCredentials:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.cookiebot.com/auth/v1/connect/token
+          scopes:
+            copa-api: "Access and use the API"
+
+security:
+  - oAuth2ClientCredentials:
+      - copa-api
+
+paths:
+  /example:
+    get:
+      summary: Example endpoint
+      security:
+        - oAuth2ClientCredentials:
+            - copa-api
+      responses:
+        '200':
+          description: Success
