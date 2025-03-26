@@ -1,30 +1,78 @@
-openapi: 3.0.3
+openapi: 3.0.0
 info:
-  title: Cookiebot API
-  version: 1.0.0
-  description: API with OAuth2 client credentials authorization
-
-components:
-  securitySchemes:
-    oAuth2ClientCredentials:
-      type: oauth2
-      flows:
-        clientCredentials:
-          tokenUrl: https://api.cookiebot.com/auth/v1/connect/token
-          scopes:
-            copa-api: "Access and use the API"
-
-security:
-  - oAuth2ClientCredentials:
-      - copa-api
-
+  version: "1.0.0"
+  title: Swagger OAuth2 Client Credentials Page
+  description: |
+    <div class="auth-form">
+      <div class="heading">
+        <h1>OAuth2 Client Credentials</h1>
+        <p>Use this form to authorize access using client credentials.</p>
+      </div>
+      <div class="form-container">
+        <form action="https://api.cookiebot.com/auth/v1/connect/token" method="post" class="form-auth">
+          <input type="hidden" name="grant_type" value="client_credentials" />
+          <div class="form-group">
+            <label for="client_id">Client ID</label>
+            <input type="text" name="client_id" placeholder="Enter client ID" size="30">
+          </div>
+          <div class="form-group">
+            <label for="client_secret">Client Secret</label>
+            <input type="password" name="client_secret" placeholder="Enter client secret" size="30">
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" name="scope" value="copa-api">
+              <strong>copa-api</strong> — Access and use the API
+            </label>
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-success">Authorize</button>
+            <button type="reset" class="btn btn-secondary">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
 paths:
-  /example:
-    get:
-      summary: Example endpoint
-      security:
-        - oAuth2ClientCredentials:
-            - copa-api
+  /auth/v1/connect/token:
+    post:
+      summary: OAuth2 Token Endpoint
+      description: Get an access token using client credentials.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - client_id
+                - client_secret
+              properties:
+                client_id:
+                  type: string
+                  description: OAuth2 Client ID
+                client_secret:
+                  type: string
+                  description: OAuth2 Client Secret
+                  format: password
+                grant_type:
+                  type: string
+                  default: client_credentials
+                scope:
+                  type: string
+                  example: copa-api
       responses:
         '200':
-          description: Success
+          description: Token response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                    example: Bearer
+                  expires_in:
+                    type: integer
+                    example: 3600
